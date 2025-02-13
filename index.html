@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fuel Station UI</title>
     <style>
-        /* CSS Styles အားလုံး မူရင်းအတိုင်းထားပါ */
         :root {
             --primary-blue: #007bff;
             --text-gray: #6c757d;
@@ -27,12 +26,99 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* ကျန်း CSS များ မူရင်းအတိုင်းထားပါ */
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo {
+            width: 400px;
+            height: auto;
+            margin-bottom: 0.5rem;
+        }
+
+        .address {
+            font-size: 1rem;
+            margin-top: -10px;
+            line-height: 1.5;
+        }
+
+        .daily-title {
+            font-size: 2rem;
+            color: var(--highlight-orange);
+            font-weight: bold;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+        }
+
+        .date-time {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-family: var(--digital-font);
+            color: var(--text-gray);
+        }
+
+        .fuel-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .fuel-item {
+            padding: 1rem;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            text-align: center;
+            background-color: white;
+            color: black;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .fuel-type {
+            color: var(--primary-blue);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            color: var(--highlight-green);
+            font-family: var(--digital-font);
+        }
+
+        .note {
+            font-size: 0.9em;
+            color: var(--text-gray);
+            text-align: center;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .footer a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="header">
+        <!-- Logo -->
         <img src="https://api.pcloud.com/getpubthumb?code=XZVDqH5ZB7XHlNvUgvh1zOGIo0Iqy4hunm3y&linkpassword=undefined&size=1912x980&crop=0&type=auto" alt="Logo" class="logo">
+        
+        <!-- Address -->
         <div class="address">
             ရှမ်းချောင်းလမ်းမကြီး ၊ က.ရ.ခ(တိုင်း)ထိပ်<br>
             မြိတ်မြို့ ၊ တနင်္သာရီတိုင်းဒေသကြီး<br>
@@ -40,83 +126,71 @@
         </div>
     </div>
 
-    <div class="date-time" id="dateTime"></div>
+    <!-- Date and Time -->
+    <div class="date-time" id="dateTime">
+        <!-- JS Will Auto Update Here -->
+    </div>
 
+    <!-- Daily Fuel Rates Title -->
     <div class="daily-title">
         <span class="emoji">⛽</span>
         Daily Fuel Rates
         <span class="emoji">📅</span>
     </div>
 
-    <!-- Updated Fuel Grid with IDs -->
+    <!-- Fuel Rate Grid -->
     <div class="fuel-grid">
         <div class="fuel-item">
             <div class="fuel-type">DIESEL</div>
-            <div class="price" id="dieselPrice">2125 MMK</div>
+            <div class="price">2125 MMK</div>
         </div>
         <div class="fuel-item">
             <div class="fuel-type">OCTANE 92</div>
-            <div class="price" id="octane92Price">2125 MMK</div>
+            <div class="price">2125 MMK</div>
         </div>
         <div class="fuel-item">
             <div class="fuel-type">PREMIUM DIESEL</div>
-            <div class="price" id="premiumDieselPrice">2150 MMK</div>
+            <div class="price">2150 MMK</div>
         </div>
         <div class="fuel-item">
             <div class="fuel-type">OCTANE 95</div>
-            <div class="price" id="octane95Price">2900 MMK</div>
+            <div class="price">2900 MMK</div>
         </div>
     </div>
 
+    <!-- Note -->
     <div class="note">
         Effective on <span id="currentDate"></span><br>
         Rates shown are indicative only and Subject to Change without Notice.
     </div>
 
+    <!-- Footer -->
     <div class="footer">
         <a href="#">SEE ALL FUEL PRICES ➔</a>
     </div>
 
     <script>
-        // Date & Time Update
+        // Function to Update Date and Time
         function updateDateTime() {
             const dateTimeElement = document.getElementById("dateTime");
             const currentDateElement = document.getElementById("currentDate");
             const now = new Date();
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             
+            // Format Date and Time
             const date = now.toLocaleDateString('en-US', options);
             const time = now.toLocaleTimeString('en-US', { hour12: true });
             
+            // Display on Page
             dateTimeElement.textContent = `Current Time: ${time}`;
             currentDateElement.textContent = date;
         }
 
-        // Fuel Prices Auto-Update (သင့်ရဲ့ JSON URL ကို ဒီမှာထည့်ပါ)
-        const PRICES_URL = "https://api.npoint.io/3c3a795d8a1eaa2a0f3e";
-
-        async function updateFuelPrices() {
-            try {
-                const response = await fetch(PRICES_URL + '?t=' + Date.now());
-                const data = await response.json();
-                
-                document.getElementById("dieselPrice").textContent = data.diesel + " MMK";
-                document.getElementById("octane92Price").textContent = data.octane92 + " MMK";
-                document.getElementById("premiumDieselPrice").textContent = data.premiumDiesel + " MMK";
-                document.getElementById("octane95Price").textContent = data.octane95 + " MMK";
-                
-                console.log('Updated at:', new Date().toLocaleTimeString());
-            } catch (error) {
-                console.error('Update Error:', error);
-                alert('စျေးနှုန်းများရယူ၍မရပါ။ အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပါ။');
-            }
-        }
-
-        // Auto-Update Intervals
+        // Update every second
         setInterval(updateDateTime, 1000);
-        setInterval(updateFuelPrices, 300000); // 5 မိနစ်တစ်ကြိမ်
+
+        // Initial Update
         updateDateTime();
-        updateFuelPrices();
     </script>
 </body>
-</html>
+</html> 
